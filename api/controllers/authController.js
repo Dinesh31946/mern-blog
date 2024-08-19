@@ -1,7 +1,8 @@
 const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
+const { errorHandler } = require('../utils/error');
 
-const signup = async (req, res) => {
+const signup = async (req, res, next) => {
     const {username, email, password} = req.body;
 
     if(!username || !email || !password || username === '' || email === '' || password === '') {
@@ -21,10 +22,10 @@ const signup = async (req, res) => {
         res.status(201).json({user});
     } catch (error) {
         if(error.code === 11000){
-            return res.status(400).json({ error: 'Username or email already exists' });
+            // return res.status(400).json({ error: 'Username or email already exists' });
+            next(errorHandler(400, 'Username or email already exists'));
         }
-        console.error(error);
-        res.status(500).json({error: error.message});
+        next(error);
     }
 
 }
