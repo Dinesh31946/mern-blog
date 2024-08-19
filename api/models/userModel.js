@@ -4,12 +4,10 @@ const UserSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
-        unique: true
     },
     email: {
         type: String,
         required: true,
-        unique: true,
         match: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
     },
     password: {
@@ -17,18 +15,11 @@ const UserSchema = new mongoose.Schema({
         required: true,
         minlength: 8
     }
-    // role: {
-    //     type: String,
-    //     enum: ['user', 'admin'],
-    //     default: 'user'
-    // },
-    // createdAt: {
-    //     type: Date,
-    //     default: Date.now
-    // }
-}, {timeseries: true}
+}, {timestamps: true}
 );
+
+UserSchema.index({ unique: true });
 
 const User = mongoose.model('User', UserSchema);
 
-export default User;
+module.exports = User;
