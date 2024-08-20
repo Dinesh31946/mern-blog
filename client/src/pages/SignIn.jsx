@@ -2,13 +2,16 @@ import { Link, useNavigate } from "react-router-dom"
 import { Button, Label, Spinner, TextInput } from "flowbite-react"
 import { useState } from "react"
 import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { signInFailure, signInStart, signInSuccess } from "../redux/user/userSlice";
 
 const SignIn = () => {
   
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({});
-  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const {loading} = useSelector((state) => state.user);
 
   const handleChange= (e) => {
     setFormData({...formData, [e.target.id]: e.target.value.trim() });
@@ -18,7 +21,7 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true);
+      dispatch(signInStart());
       const res = await fetch('/api/auth/signin',{
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -27,15 +30,15 @@ const SignIn = () => {
       const data = await res.json();
       if(data.success === false){
         toast.error(data.message);
-      }else{
+        dispatch(signInFailure(data.message));
+      }else {
         toast.success(data.message);
-        setFormData({}); // Clear the form data
         navigate('/'); // Redirect to login page after successful signIn
+        dispatch(signInSuccess(data));
       }
-      setLoading(false);
     } catch (error) {
       toast.error(error.message);
-      setLoading(false);
+      dispatch(signInFailure(error.message));
     }
   }
 
