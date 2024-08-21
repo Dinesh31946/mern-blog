@@ -4,6 +4,7 @@ import { useState } from "react"
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { signInFailure, signInStart, signInSuccess } from "../redux/user/userSlice";
+import OAuth from "../components/OAuth";
 
 const SignIn = () => {
   
@@ -32,9 +33,9 @@ const SignIn = () => {
         toast.error(data.message);
         dispatch(signInFailure(data.message));
       }else {
+        dispatch(signInSuccess(data));
         toast.success(data.message);
         navigate('/'); // Redirect to login page after successful signIn
-        dispatch(signInSuccess(data));
       }
     } catch (error) {
       toast.error(error.message);
@@ -74,6 +75,7 @@ const SignIn = () => {
                           ) : "Sign In" 
                         }
                     </Button>
+                    <OAuth/>
                 </form>
                 <div className="flex gap-2 mt-2">
                     <span>Don't have an account?</span>
