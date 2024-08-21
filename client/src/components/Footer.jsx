@@ -68,11 +68,11 @@ const FooterComponent = () => {
             <div className="w-full sm:flex sm:items-center sm:justify-between">
                 <FooterCopyright href="#" by="Dinesh's Blog" year={new Date().getFullYear()} />
                 <div className="flex gap-6 mt-2 sm:justify-center">
-                    <FooterIcon href="#" icon={BsFacebook} />
-                    <FooterIcon href="#" icon={BsInstagram} />
-                    <FooterIcon href="#" icon={BsTwitter} />
-                    <FooterIcon href="#" icon={BsGithub} />
-                    <FooterIcon href="#" icon={BsDribbble} />
+                    <FooterIcon href="#" icon={BsFacebook} style={{ color: '#1877F2' }} />
+                    <FooterIcon href="#" icon={BsInstagram} style={{ color: '#E4405F' }} />
+                    <FooterIcon href="#" icon={BsTwitter} style={{ color: '#1DA1F2' }} />
+                    <FooterIcon href="#" icon={BsGithub} style={{ color: '#333' }} />
+                    <FooterIcon href="#" icon={BsDribbble} style={{ color: '#EA4C89' }} />
                 </div>
             </div>
         </div>
