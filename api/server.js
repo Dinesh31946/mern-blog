@@ -4,9 +4,11 @@ const { default: mongoose } = require('mongoose');
 const connectDb = require('../db/connect');
 const userRoute = require('./routes/userRoutes');
 const authRoute = require('./routes/authRoute');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser())
 
 const PORT = process.env.PORT || 3000;
 
