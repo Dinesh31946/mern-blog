@@ -1,11 +1,10 @@
 import { Sidebar, SidebarItem, SidebarItemGroup, SidebarItems } from 'flowbite-react'
 import { useEffect, useState } from 'react';
 import { HiArrowSmRight, HiUser } from 'react-icons/hi'
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const DashSidebar = () => {
 
-    const navigate = useNavigate();
     const location = useLocation();
     const [tab, setTab] = useState();
 
@@ -19,23 +18,21 @@ const DashSidebar = () => {
 
     }, [location.search]);
 
-    const handleNavigation = (path) => {
-        navigate(path);
-    };
-
     return (
         <Sidebar className='w-full md:w-56'>
             <SidebarItems>
                 <SidebarItemGroup>
-                    <SidebarItem 
-                        className="cursor-pointer" 
-                        active={tab === "profile"} 
-                        icon={HiUser} label={'user'} 
-                        labelColor="dark" 
-                        onClick={() => handleNavigation('/dashboard?tab=profile')}
-                    >
-                        Profile
-                    </SidebarItem>
+                    <Link to='/dashboard?tab=profile'>
+                        <SidebarItem
+                            className="cursor-pointer"
+                            active={tab === "profile"}
+                            icon={HiUser} label={'user'}
+                            labelColor="dark"
+                            as='div'
+                        >
+                            Profile
+                        </SidebarItem>
+                    </Link>
                     <SidebarItem className="cursor-pointer" icon={HiArrowSmRight} >
                         Sign Out
                     </SidebarItem>
