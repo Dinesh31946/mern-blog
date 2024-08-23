@@ -24,6 +24,9 @@ import {
     updateFailure,
     updateStart,
     updateSuccess,
+    userSignoutFailure,
+    userSignoutStart,
+    userSignoutSuccess,
 } from "../redux/user/userSlice";
 import { HiOutlineExclamationCircle } from 'react-icons/hi'
 
@@ -32,12 +35,12 @@ const DashProfile = () => {
     const { currentUser } = useSelector((state) => state.user);
     const [imageFile, setImageFile] = useState(null);
     const [imageFileUrl, setImageFileUrl] = useState(null);
-    const [imageFileUploadProgress, setImageFileUploadProgress] =
-        useState(null);
+    const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null);
     const [imageFileUploadError, setImageFileUploadError] = useState(null);
     const [formData, setFormData] = useState(null);
     const [imageFileUploading, setImageFileUploading] = useState(false);
     const [showModel, setShowModel] = useState(false);
+    const [showSignoutModal, setShowSignoutModal] = useState(false);
 
     const dispatch = useDispatch();
     const filePickerRef = useRef();
@@ -162,6 +165,27 @@ const DashProfile = () => {
         }
     }
 
+    const handleSignout = async () => {
+        setShowSignoutModal(false);
+        try {
+            dispatch(userSignoutStart());
+            const res = await fetch("/api/user/signout", {
+                method: "POST",
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                toast.error("Something went wrong, please try again later.");
+                dispatch(userSignoutFailure(data.message));
+                return;
+            } else {
+                toast.success(data.message);
+                dispatch(userSignoutSuccess(data));
+            }
+        } catch (error) {
+            dispatch(userSignoutFailure(error.message));
+        }
+    }
+
     return (
         <div className="max-w-lg mx-auto p-3 w-full">
             <h1 className="my-7 text-center font-semibold text-3xl">Profile</h1>
@@ -235,7 +259,7 @@ const DashProfile = () => {
                 >
                     Delete Account
                 </span>
-                <span className="cursor-pointer">Sign Out</span>
+                <span onClick={() => setShowSignoutModal(true)} className="cursor-pointer">Sign Out</span>
             </div>
             <Modal
                 show={showModel}
@@ -253,6 +277,28 @@ const DashProfile = () => {
                                 Yes, I am sure
                             </Button>
                             <Button color='gray' outline onClick={() => setShowModel(false)}>
+                                Cancel
+                            </Button>
+                        </div>
+                    </div>
+                </ModalBody>
+            </Modal>
+            <Modal
+                show={showSignoutModal}
+                onClick={() => setShowSignoutModal(false)}
+                popup
+                size="md"
+            >
+                <ModalHeader />
+                <ModalBody>
+                    <div className="text-center">
+                        <HiOutlineExclamationCircle className="w-14 h-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto" />
+                        <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">Are you sure you want to signout?</h3>
+                        <div className="flex gap-5 justify-center">
+                            <Button color='failure' onClick={() => handleSignout()}>
+                                Yes, I am sure
+                            </Button>
+                            <Button color='gray' outline onClick={() => setShowSignoutModal(false)}>
                                 Cancel
                             </Button>
                         </div>
