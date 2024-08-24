@@ -28,14 +28,15 @@ import {
     userSignoutStart,
     userSignoutSuccess,
 } from "../redux/user/userSlice";
-import { HiOutlineExclamationCircle } from 'react-icons/hi'
-
+import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { Link } from "react-router-dom";
 
 const DashProfile = () => {
-    const { currentUser } = useSelector((state) => state.user);
+    const { currentUser, loading } = useSelector((state) => state.user);
     const [imageFile, setImageFile] = useState(null);
     const [imageFileUrl, setImageFileUrl] = useState(null);
-    const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null);
+    const [imageFileUploadProgress, setImageFileUploadProgress] =
+        useState(null);
     const [imageFileUploadError, setImageFileUploadError] = useState(null);
     const [formData, setFormData] = useState(null);
     const [imageFileUploading, setImageFileUploading] = useState(false);
@@ -163,7 +164,7 @@ const DashProfile = () => {
         } catch (error) {
             dispatch(deleteUserFailure(error.message));
         }
-    }
+    };
 
     const handleSignout = async () => {
         setShowSignoutModal(false);
@@ -184,7 +185,7 @@ const DashProfile = () => {
         } catch (error) {
             dispatch(userSignoutFailure(error.message));
         }
-    }
+    };
 
     return (
         <div className="max-w-lg mx-auto p-3 w-full">
@@ -212,8 +213,9 @@ const DashProfile = () => {
                                     left: 0,
                                 },
                                 path: {
-                                    stroke: `rgba(62, 152, 199, ${imageFileUploadProgress / 100
-                                        })`,
+                                    stroke: `rgba(62, 152, 199, ${
+                                        imageFileUploadProgress / 100
+                                    })`,
                                 },
                             }}
                         />
@@ -221,10 +223,11 @@ const DashProfile = () => {
                     <img
                         src={imageFileUrl || currentUser.profilePicture}
                         alt="user avatar"
-                        className={`rounded-full w-full h-full border-8 object-cover border-[lightgray] ${imageFileUploadProgress &&
+                        className={`rounded-full w-full h-full border-8 object-cover border-[lightgray] ${
+                            imageFileUploadProgress &&
                             imageFileUploadProgress < 100 &&
                             "opacity-60"
-                            } `}
+                        } `}
                         onClick={() => filePickerRef.current.click()}
                     />
                 </div>
@@ -249,8 +252,19 @@ const DashProfile = () => {
                     onChange={handleChange}
                 />
                 <Button type="submit" gradientDuoTone="purpleToBlue" outline>
-                    Update
+                    {loading || imageFileUploading ? "Loading..." : "Update"}
                 </Button>
+                {currentUser.isAdmin && (
+                    <Link to={"/create-post"}>
+                        <Button
+                            type="button"
+                            gradientDuoTone="purpleToPink"
+                            className="w-full"
+                        >
+                            Create a Post
+                        </Button>
+                    </Link>
+                )}
             </form>
             <div className="text-red-500 flex justify-between mt-5">
                 <span
@@ -259,7 +273,12 @@ const DashProfile = () => {
                 >
                     Delete Account
                 </span>
-                <span onClick={() => setShowSignoutModal(true)} className="cursor-pointer">Sign Out</span>
+                <span
+                    onClick={() => setShowSignoutModal(true)}
+                    className="cursor-pointer"
+                >
+                    Sign Out
+                </span>
             </div>
             <Modal
                 show={showModel}
@@ -271,12 +290,21 @@ const DashProfile = () => {
                 <ModalBody>
                     <div className="text-center">
                         <HiOutlineExclamationCircle className="w-14 h-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto" />
-                        <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">Are you sure you want to delete your account?</h3>
+                        <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">
+                            Are you sure you want to delete your account?
+                        </h3>
                         <div className="flex gap-5 justify-center">
-                            <Button color='failure' onClick={() => handleDeleteUser()}>
+                            <Button
+                                color="failure"
+                                onClick={() => handleDeleteUser()}
+                            >
                                 Yes, I am sure
                             </Button>
-                            <Button color='gray' outline onClick={() => setShowModel(false)}>
+                            <Button
+                                color="gray"
+                                outline
+                                onClick={() => setShowModel(false)}
+                            >
                                 Cancel
                             </Button>
                         </div>
@@ -293,12 +321,21 @@ const DashProfile = () => {
                 <ModalBody>
                     <div className="text-center">
                         <HiOutlineExclamationCircle className="w-14 h-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto" />
-                        <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">Are you sure you want to signout?</h3>
+                        <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">
+                            Are you sure you want to signout?
+                        </h3>
                         <div className="flex gap-5 justify-center">
-                            <Button color='failure' onClick={() => handleSignout()}>
+                            <Button
+                                color="failure"
+                                onClick={() => handleSignout()}
+                            >
                                 Yes, I am sure
                             </Button>
-                            <Button color='gray' outline onClick={() => setShowSignoutModal(false)}>
+                            <Button
+                                color="gray"
+                                outline
+                                onClick={() => setShowSignoutModal(false)}
+                            >
                                 Cancel
                             </Button>
                         </div>
