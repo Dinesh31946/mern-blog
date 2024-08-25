@@ -30,7 +30,7 @@ const PostSchema = new mongoose.Schema(
             default: "uncategorized",
         },
     },
-    [{ timestamps: true }]
+    { timestamps: true }
 );
 
 PostSchema.index({ unique: true });
