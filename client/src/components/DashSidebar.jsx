@@ -1,25 +1,29 @@
-import { Sidebar, SidebarItem, SidebarItemGroup, SidebarItems } from 'flowbite-react'
-import { useEffect, useState } from 'react';
-import { HiArrowSmRight, HiUser } from 'react-icons/hi'
-import { useDispatch } from 'react-redux';
-import { Link, useLocation } from 'react-router-dom';
-import { userSignoutStart, userSignoutSuccess } from '../redux/user/userSlice';
-import { toast } from 'react-toastify';
+import {
+    Sidebar,
+    SidebarItem,
+    SidebarItemGroup,
+    SidebarItems,
+} from "flowbite-react";
+import { useEffect, useState } from "react";
+import { HiArrowSmRight, HiDocumentText, HiUser } from "react-icons/hi";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation } from "react-router-dom";
+import { userSignoutStart, userSignoutSuccess } from "../redux/user/userSlice";
+import { toast } from "react-toastify";
 
 const DashSidebar = () => {
-
     const dispatch = useDispatch();
     const location = useLocation();
+    const { currentUser } = useSelector((state) => state.user);
     const [tab, setTab] = useState();
 
     useEffect(() => {
         const urlParams = new URLSearchParams(location.search);
-        const tabFromUrl = urlParams.get('tab');
+        const tabFromUrl = urlParams.get("tab");
 
         if (tabFromUrl) {
             setTab(tabFromUrl);
         }
-
     }, [location.search]);
 
     const handleSignout = async () => {
@@ -38,30 +42,47 @@ const DashSidebar = () => {
         } catch (error) {
             toast.error("An error occurred. Please try again.");
         }
-    }
+    };
 
     return (
-        <Sidebar className='w-full md:w-56'>
+        <Sidebar className="w-full md:w-56">
             <SidebarItems>
-                <SidebarItemGroup>
-                    <Link to='/dashboard?tab=profile'>
+                <SidebarItemGroup className="flex flex-col gap-1">
+                    <Link to="/dashboard?tab=profile">
                         <SidebarItem
                             className="cursor-pointer"
                             active={tab === "profile"}
-                            icon={HiUser} label={'user'}
+                            icon={HiUser}
+                            label={currentUser.isAdmin ? "Admin" : "User"}
                             labelColor="dark"
-                            as='div'
+                            as="div"
                         >
                             Profile
                         </SidebarItem>
                     </Link>
-                    <SidebarItem className="cursor-pointer" icon={HiArrowSmRight} onClick={() => handleSignout()} >
+                    {currentUser.isAdmin && (
+                        <Link to="/dashboard?tab=posts">
+                            <SidebarItem
+                                className="cursor-pointer"
+                                active={tab === "posts"}
+                                icon={HiDocumentText}
+                                as="div"
+                            >
+                                Posts
+                            </SidebarItem>
+                        </Link>
+                    )}
+                    <SidebarItem
+                        className="cursor-pointer"
+                        icon={HiArrowSmRight}
+                        onClick={() => handleSignout()}
+                    >
                         Sign Out
                     </SidebarItem>
                 </SidebarItemGroup>
             </SidebarItems>
         </Sidebar>
-    )
-}
+    );
+};
 
-export default DashSidebar
+export default DashSidebar;
