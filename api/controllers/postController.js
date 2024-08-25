@@ -4,8 +4,6 @@ const slugify = require("slugify");
 const Post = require("../models/postModel");
 
 const createPost = async (req, res, next) => {
-    console.log(req.user);
-
     if (!req.user.isAdmin) {
         return next(
             errorHandler(403, "You do not have permission to create a post")
@@ -23,7 +21,6 @@ const createPost = async (req, res, next) => {
         ...req.body,
         userId: req.user.id,
         slug,
-        author: req.user.id,
     });
     try {
         const savedPost = await newPost.save();

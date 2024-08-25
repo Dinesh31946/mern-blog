@@ -12,8 +12,11 @@ import { app } from "../firebase";
 import { toast } from "react-toastify";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { useNavigate } from "react-router-dom";
 
 const CreatePost = () => {
+    const navigate = useNavigate();
+
     const [file, setFile] = useState(null);
     const [imageUploadProgress, setImageUploadProgress] = useState(null);
     const [imageUrl, setImageUrl] = useState(null);
@@ -64,12 +67,39 @@ const CreatePost = () => {
         }
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const { title, category, image, content } = formData;
+
+        if (!title || !content || !image) {
+            return toast.error("All fields are required!");
+        }
+        try {
+            const res = await fetch("/api/post/create", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                toast.error("Failed to create post");
+                return;
+            }
+            if (res.ok) {
+                toast.success("Post created successfully!");
+                navigate(`/post/${data.slug}`);
+            }
+        } catch (error) {
+            toast.error("Something went wrong");
+        }
+    };
+
     return (
         <div className="p-3 max-w-3xl mx-auto min-h-screen">
             <h1 className="text-center text-3xl my-7 font-semibold">
                 Create a post
             </h1>
-            <form className="flex flex-col gap-4">
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-4 sm:flex-row justify-between">
                     <TextInput
                         type="text"
@@ -77,8 +107,18 @@ const CreatePost = () => {
                         required
                         id="title"
                         className="flex-1"
+                        onChange={(e) =>
+                            setFormData({ ...formData, title: e.target.value })
+                        }
                     />
-                    <Select>
+                    <Select
+                        onChange={(e) =>
+                            setFormData({
+                                ...formData,
+                                category: e.target.value,
+                            })
+                        }
+                    >
                         <option value="uncategorized">Select a category</option>
                         <option value="javascript">Javascript</option>
                         <option value="nodejs">Nodejs</option>
@@ -123,9 +163,12 @@ const CreatePost = () => {
                     placeholder="Write something..."
                     className="h-72 mb-12"
                     required
+                    onChange={(value) =>
+                        setFormData({ ...formData, content: value })
+                    }
                 />
                 <Button
-                    type="button"
+                    type="submit"
                     gradientDuoTone="purpleToPink"
                     className="mt-4 sm:mt-0"
                 >
