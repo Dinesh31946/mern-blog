@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { shallowEqual, useSelector } from "react-redux";
 import {
+    Button,
+    Modal,
+    ModalBody,
+    ModalHeader,
     Table,
     TableBody,
     TableCell,
@@ -10,12 +14,15 @@ import {
     TableRow,
 } from "flowbite-react";
 import { Link } from "react-router-dom";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 
 const DashPosts = () => {
     const { currentUser } = useSelector((state) => state.user, shallowEqual);
 
     const [userPosts, setUserPosts] = useState([]);
     const [showMore, setShowMore] = useState(true);
+    const [showModal, setShowModal] = useState(false);
+    const [postIdToDelete, setPostIdToDelete] = useState("");
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -54,6 +61,29 @@ const DashPosts = () => {
                 if (data.posts.length < 9) {
                     setShowMore(false);
                 }
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
+    };
+
+    const handleDeletePost = async () => {
+        setShowModal(false);
+        try {
+            const res = await fetch(
+                `/api/post/delete/${postIdToDelete}/${currentUser._id}`,
+                {
+                    method: "DELETE",
+                }
+            );
+            const data = await res.json();
+            if (!res.ok) {
+                toast.error("Something went wrong, please try again later.");
+            } else {
+                toast.success(data.message);
+                setUserPosts((prevPosts) =>
+                    prevPosts.filter((post) => post._id !== postIdToDelete)
+                );
             }
         } catch (error) {
             console.log(error.message);
@@ -106,7 +136,13 @@ const DashPosts = () => {
                                     </TableCell>
                                     <TableCell>{post.category}</TableCell>
                                     <TableCell>
-                                        <span className="font-medium text-red-500 hover:underline cursor-pointer">
+                                        <span
+                                            onClick={() => {
+                                                setShowModal(true);
+                                                setPostIdToDelete(post._id);
+                                            }}
+                                            className="font-medium text-red-500 hover:underline cursor-pointer"
+                                        >
                                             Delete
                                         </span>
                                     </TableCell>
@@ -134,6 +170,37 @@ const DashPosts = () => {
             ) : (
                 <p>You have no posts yet</p>
             )}
+            <Modal
+                show={showModal}
+                onClick={() => setShowModal(false)}
+                popup
+                size="md"
+            >
+                <ModalHeader />
+                <ModalBody>
+                    <div className="text-center">
+                        <HiOutlineExclamationCircle className="w-14 h-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto" />
+                        <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">
+                            Are you sure you want to delete this post?
+                        </h3>
+                        <div className="flex gap-5 justify-center">
+                            <Button
+                                color="failure"
+                                onClick={() => handleDeletePost()}
+                            >
+                                Yes, I am sure
+                            </Button>
+                            <Button
+                                color="gray"
+                                outline
+                                onClick={() => setShowModal(false)}
+                            >
+                                Cancel
+                            </Button>
+                        </div>
+                    </div>
+                </ModalBody>
+            </Modal>
         </div>
     );
 };
