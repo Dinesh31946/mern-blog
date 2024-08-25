@@ -65,7 +65,7 @@ const DashProfile = () => {
 
         const storage = getStorage(app);
         const fileName = new Date().getTime() + imageFile.name;
-        const storageRef = ref(storage, fileName);
+        const storageRef = ref(storage, `user/${fileName}`);
         const uploadTask = uploadBytesResumable(storageRef, imageFile);
 
         try {

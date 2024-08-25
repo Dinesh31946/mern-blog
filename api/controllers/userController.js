@@ -14,6 +14,10 @@ const updateUser = async (req, res, next) => {
             errorHandler(403, "You are not allowed to update this user")
         );
     }
+
+    //initialize the empty update fields
+    const updateFileds = {};
+
     if (req.body.password) {
         if (req.body.password.length < 8) {
             return next(
@@ -22,35 +26,45 @@ const updateUser = async (req, res, next) => {
         }
         req.body.password = bcrypt.hashSync(req.body.password, 10);
     }
-    if (req.body.username.length < 7 || req.body.username.length > 20) {
-        return next(
-            errorHandler(
-                400,
-                "Username must be between 7 and 20 characters long"
-            )
-        );
+
+    //username update
+    if (req.body.username) {
+        if (req.body.username.length < 7 || req.body.username.length > 20) {
+            return next(
+                errorHandler(
+                    400,
+                    "Username must be between 7 and 20 characters long"
+                )
+            );
+        }
+        if (req.body.username.includes(" ")) {
+            return next(errorHandler(400, "Username cannot contain spaces"));
+        }
+        if (!req.body.username.match(/^[a-zA-Z0-9]+$/)) {
+            return next(
+                errorHandler(
+                    400,
+                    "Username must contain only alphanumeric characters"
+                )
+            );
+        }
+        updateFileds.username = req.body.username;
     }
-    if (req.body.username.includes(" ")) {
-        return next(errorHandler(400, "Username cannot contain spaces"));
+
+    //Email update
+    if (req.body.email) {
+        updateFileds.email = req.body.email;
     }
-    if (!req.body.username.match(/^[a-zA-Z0-9]+$/)) {
-        return next(
-            errorHandler(
-                400,
-                "Username must contain only alphanumeric characters"
-            )
-        );
+
+    if (req.body.profilePicture) {
+        updateFileds.profilePicture = req.body.profilePicture;
     }
+
     try {
         const updatedUser = await User.findByIdAndUpdate(
             req.params.userId,
             {
-                $set: {
-                    username: req.body.username,
-                    email: req.body.email,
-                    profilePicture: req.body.profilePicture,
-                    password: req.body.password,
-                },
+                $set: updateFileds,
             },
             { new: true }
         );
