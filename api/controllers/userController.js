@@ -2,12 +2,6 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/userModel");
 const { errorHandler } = require("../utils/error");
 
-const test = (req, res) => {
-    res.status(200).json({
-        message: "API Routes and Controllers are working!",
-    });
-};
-
 const updateUser = async (req, res, next) => {
     if (req.user.id !== req.params.userId) {
         return next(
@@ -100,9 +94,53 @@ const signout = async (req, res, next) => {
     }
 };
 
+const getAllUser = async (req, res, next) => {
+    if (!req.user.isAdmin) {
+        return next(
+            errorHandler(403, "You are not allowed to access this information")
+        );
+    }
+    try {
+        const startIndex = parseInt(req.query.startIndex) || 0;
+        const limit = parseInt(req.query.limit) || 10;
+        const sortDirection = req.query.order === "asc" ? 1 : -1;
+
+        const users = await User.find()
+            .sort({ updatedAt: sortDirection })
+            .skip(startIndex)
+            .limit(limit);
+
+        const withoutPasswordUser = users.map((user) => {
+            const { password, ...rest } = user._doc;
+            return rest;
+        });
+
+        const totalUsers = await User.countDocuments();
+
+        const now = new Date();
+        const oneMonthAgo = new Date(
+            now.getFullYear(),
+            now.getMonth() - 1,
+            now.getDate()
+        );
+
+        const lastMonthUser = await User.countDocuments({
+            createdAt: { $gte: oneMonthAgo },
+        });
+
+        res.status(200).json({
+            withoutPasswordUser,
+            totalUsers,
+            lastMonthUser,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
-    test,
     updateUser,
     deleteUser,
     signout,
+    getAllUser,
 };
