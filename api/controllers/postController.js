@@ -89,8 +89,35 @@ const deletePost = async (req, res, next) => {
         );
     }
     try {
-        await Post.findByIdAndDelete(req.params.postId);
-        res.status(200).json("Post deleted successfully");
+        const resposnse = await Post.findByIdAndDelete(req.params.postId);
+        res.status(200).json(req.params.postId);
+    } catch (error) {
+        next(error);
+    }
+};
+
+const updatepost = async (req, res, next) => {
+    const { title, content, category, image } = req.body;
+
+    if (!req.user.isAdmin || req.user.id !== req.params.userId) {
+        return next(
+            errorHandler(403, "You are not allowed to update this post")
+        );
+    }
+    try {
+        const updatedPost = await Post.findByIdAndUpdate(
+            req.params.postId,
+            {
+                $set: {
+                    title,
+                    content,
+                    category,
+                    image,
+                },
+            },
+            { new: true }
+        );
+        res.status(200).json(updatedPost);
     } catch (error) {
         next(error);
     }
@@ -100,4 +127,5 @@ module.exports = {
     createPost,
     getposts,
     deletePost,
+    updatepost,
 };
