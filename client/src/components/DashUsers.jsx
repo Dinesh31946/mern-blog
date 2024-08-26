@@ -13,28 +13,27 @@ import {
     TableHeadCell,
     TableRow,
 } from "flowbite-react";
-import { Link } from "react-router-dom";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { ImCheckmark, ImCross } from "react-icons/im";
 
-const DashPosts = () => {
+const DashUsers = () => {
     const { currentUser } = useSelector((state) => state.user, shallowEqual);
 
-    const [userPosts, setUserPosts] = useState([]);
+    const [users, setUsers] = useState([]);
     const [showMore, setShowMore] = useState(true);
     const [showModal, setShowModal] = useState(false);
-    const [postIdToDelete, setPostIdToDelete] = useState("");
+    const [userIdToDelete, setUserIdToDelete] = useState("");
 
     useEffect(() => {
-        const fetchPosts = async () => {
+        const fetchusers = async () => {
             try {
-                const res = await fetch(
-                    `/api/post/getposts?userId=${currentUser._id}`
-                );
+                const res = await fetch(`/api/user/getallusers`);
                 const data = await res.json();
+                console.log(data);
 
                 if (res.ok) {
-                    setUserPosts(data.posts);
-                    if (data.posts.length < 9) {
+                    setUsers(data.users);
+                    if (data.users.length < 9) {
                         setShowMore(false);
                     }
                 }
@@ -45,20 +44,20 @@ const DashPosts = () => {
         };
 
         if (currentUser.isAdmin) {
-            fetchPosts();
+            fetchusers();
         }
     }, [currentUser._id]);
 
     const handleShowMore = async () => {
-        const startIndex = userPosts.length;
+        const startIndex = users.length;
         try {
             const res = await fetch(
-                `/api/post/getposts?userId=${currentUser._id}&startIndex=${startIndex}`
+                `/api/user/getallusers?startIndex=${startIndex}`
             );
             const data = await res.json();
             if (res.ok) {
-                setUserPosts((prevPosts) => [...prevPosts, ...data.posts]);
-                if (data.posts.length < 9) {
+                setUsers((prev) => [...prev, ...data.users]);
+                if (data.users.length < 9) {
                     setShowMore(false);
                 }
             }
@@ -67,22 +66,19 @@ const DashPosts = () => {
         }
     };
 
-    const handleDeletePost = async () => {
+    const handleDeleteUser = async () => {
         setShowModal(false);
         try {
-            const res = await fetch(
-                `/api/post/delete/${postIdToDelete}/${currentUser._id}`,
-                {
-                    method: "DELETE",
-                }
-            );
+            const res = await fetch(`/api/user/delete/${userIdToDelete}`, {
+                method: "DELETE",
+            });
             const data = await res.json();
             if (!res.ok) {
                 toast.error("Something went wrong, please try again later.");
             } else {
                 toast.success(data.message);
-                setUserPosts((prevPosts) =>
-                    prevPosts.filter((post) => post._id !== postIdToDelete)
+                setUsers((prev) =>
+                    prev.filter((user) => user._id !== userIdToDelete)
                 );
             }
         } catch (error) {
@@ -92,25 +88,23 @@ const DashPosts = () => {
 
     return (
         <div className="table-auto md:w-full overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
-            {currentUser.isAdmin && userPosts.length > 0 ? (
+            {currentUser.isAdmin && users.length > 0 ? (
                 <>
                     <Table hoverable className="shadow-md">
                         <TableHead>
-                            <TableHeadCell>Date Updated</TableHeadCell>
-                            <TableHeadCell>Post Image</TableHeadCell>
-                            <TableHeadCell>Post Title</TableHeadCell>
-                            <TableHeadCell>category</TableHeadCell>
+                            <TableHeadCell>Date created</TableHeadCell>
+                            <TableHeadCell>User Image</TableHeadCell>
+                            <TableHeadCell>Username</TableHeadCell>
+                            <TableHeadCell>Email</TableHeadCell>
+                            <TableHeadCell>admin</TableHeadCell>
                             <TableHeadCell>Delete</TableHeadCell>
-                            <TableHeadCell>
-                                <span>Edit</span>
-                            </TableHeadCell>
                         </TableHead>
-                        {userPosts.map((post, index) => (
+                        {users.map((user, index) => (
                             <TableBody key={index} className="divide-y">
                                 <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-700">
                                     <TableCell>
                                         {new Date(
-                                            post.updatedAt
+                                            user.createdAt
                                         ).toLocaleDateString("en-US", {
                                             day: "numeric",
                                             month: "long", // 'short' for abbreviated month name
@@ -118,41 +112,33 @@ const DashPosts = () => {
                                         })}
                                     </TableCell>
                                     <TableCell>
-                                        <Link to={`/posts/${post.slug}`}>
-                                            <img
-                                                src={post.image}
-                                                alt={post.title}
-                                                className="w-20 h-10 object-cover bg-gray-500"
-                                            />
-                                        </Link>
+                                        <img
+                                            src={user.profilePicture}
+                                            alt={user.username}
+                                            className="w-10 h-10 object-cover bg-gray-500 rounded-full"
+                                        />
                                     </TableCell>
+                                    <TableCell className="font-medium text-gray-900 dark:text-white">
+                                        {user.username}
+                                    </TableCell>
+                                    <TableCell>{user.email}</TableCell>
                                     <TableCell>
-                                        <Link
-                                            to={`/posts/${post.slug}`}
-                                            className="font-medium text-gray-900 dark:text-white"
-                                        >
-                                            {post.title}
-                                        </Link>
+                                        {user.isAdmin ? (
+                                            <ImCheckmark color="green" />
+                                        ) : (
+                                            <ImCross color="red" />
+                                        )}
                                     </TableCell>
-                                    <TableCell>{post.category}</TableCell>
                                     <TableCell>
                                         <span
                                             onClick={() => {
                                                 setShowModal(true);
-                                                setPostIdToDelete(post._id);
+                                                setUserIdToDelete(user._id);
                                             }}
                                             className="font-medium text-red-500 hover:underline cursor-pointer"
                                         >
                                             Delete
                                         </span>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Link
-                                            className="text-teal-500"
-                                            to={`/update-post/${post._id}`}
-                                        >
-                                            <span>Edit</span>
-                                        </Link>
                                     </TableCell>
                                 </TableRow>
                             </TableBody>
@@ -168,7 +154,7 @@ const DashPosts = () => {
                     )}
                 </>
             ) : (
-                <p>You have no posts yet</p>
+                <p>No users added</p>
             )}
             <Modal
                 show={showModal}
@@ -181,12 +167,12 @@ const DashPosts = () => {
                     <div className="text-center">
                         <HiOutlineExclamationCircle className="w-14 h-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto" />
                         <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">
-                            Are you sure you want to delete this post?
+                            Are you sure you want to delete this account?
                         </h3>
                         <div className="flex gap-5 justify-center">
                             <Button
                                 color="failure"
-                                onClick={() => handleDeletePost()}
+                                onClick={() => handleDeleteUser()}
                             >
                                 Yes, I am sure
                             </Button>
@@ -205,4 +191,4 @@ const DashPosts = () => {
     );
 };
 
-export default DashPosts;
+export default DashUsers;

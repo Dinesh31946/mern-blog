@@ -5,7 +5,12 @@ import {
     SidebarItems,
 } from "flowbite-react";
 import { useEffect, useState } from "react";
-import { HiArrowSmRight, HiDocumentText, HiUser } from "react-icons/hi";
+import {
+    HiArrowSmRight,
+    HiDocumentText,
+    HiOutlineUserGroup,
+    HiUser,
+} from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { userSignoutStart, userSignoutSuccess } from "../redux/user/userSlice";
@@ -61,16 +66,28 @@ const DashSidebar = () => {
                         </SidebarItem>
                     </Link>
                     {currentUser.isAdmin && (
-                        <Link to="/dashboard?tab=posts">
-                            <SidebarItem
-                                className="cursor-pointer"
-                                active={tab === "posts"}
-                                icon={HiDocumentText}
-                                as="div"
-                            >
-                                Posts
-                            </SidebarItem>
-                        </Link>
+                        <>
+                            <Link to="/dashboard?tab=users">
+                                <SidebarItem
+                                    className="cursor-pointer"
+                                    active={tab === "users"}
+                                    icon={HiOutlineUserGroup}
+                                    as="div"
+                                >
+                                    Users
+                                </SidebarItem>
+                            </Link>
+                            <Link to="/dashboard?tab=posts">
+                                <SidebarItem
+                                    className="cursor-pointer"
+                                    active={tab === "posts"}
+                                    icon={HiDocumentText}
+                                    as="div"
+                                >
+                                    Posts
+                                </SidebarItem>
+                            </Link>
+                        </>
                     )}
                     <SidebarItem
                         className="cursor-pointer"
