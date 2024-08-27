@@ -118,7 +118,7 @@ const DashPosts = () => {
                                         })}
                                     </TableCell>
                                     <TableCell>
-                                        <Link to={`/posts/${post.slug}`}>
+                                        <Link to={`/post/${post.slug}`}>
                                             <img
                                                 src={post.image}
                                                 alt={post.title}
@@ -128,7 +128,7 @@ const DashPosts = () => {
                                     </TableCell>
                                     <TableCell>
                                         <Link
-                                            to={`/posts/${post.slug}`}
+                                            to={`/post/${post.slug}`}
                                             className="font-medium text-gray-900 dark:text-white"
                                         >
                                             {post.title}
