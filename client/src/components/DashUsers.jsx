@@ -76,7 +76,7 @@ const DashUsers = () => {
             if (!res.ok) {
                 toast.error("Something went wrong, please try again later.");
             } else {
-                toast.success(data.message);
+                toast.success("User deleted successfully");
                 setUsers((prev) =>
                     prev.filter((user) => user._id !== userIdToDelete)
                 );
