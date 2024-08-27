@@ -5,6 +5,7 @@ const connectDb = require("../db/connect");
 const userRoute = require("./routes/userRoutes");
 const authRoute = require("./routes/authRoute");
 const postRoute = require("./routes/postRoute");
+const commentRoute = require("./routes/commentRoute");
 const cookieParser = require("cookie-parser");
 
 const app = express();
@@ -22,6 +23,7 @@ app.listen(PORT, () => {
 app.use("/api/user", userRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/post", postRoute);
+app.use("/api/comment", commentRoute);
 
 // error handling middleware
 app.use((err, req, res, next) => {
