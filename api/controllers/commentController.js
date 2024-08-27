@@ -20,6 +20,17 @@ const createComment = async (req, res, next) => {
     }
 };
 
+const getComments = async (req, res, next) => {
+    try {
+        const { postId } = req.params;
+        const comments = await Comment.find({ postId }).sort({ createdAt: -1 });
+        res.status(200).json(comments);
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     createComment,
+    getComments,
 };

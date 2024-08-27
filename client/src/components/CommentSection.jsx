@@ -1,13 +1,15 @@
 import { Button, Textarea } from "flowbite-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import Comments from "./Comments";
 
 const CommentSection = ({ postId }) => {
     const { currentUser } = useSelector((state) => state.user);
     const [comment, setComment] = useState("");
     const [commentPosting, setCommentPosting] = useState(false);
+    const [comments, setComments] = useState([]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -36,6 +38,7 @@ const CommentSection = ({ postId }) => {
                 toast.success("Comment posted successfully!");
                 setComment("");
                 setCommentPosting(false);
+                setComments([data, ...comments]);
             } else {
                 toast.error("Failed to post comment!");
             }
@@ -45,6 +48,24 @@ const CommentSection = ({ postId }) => {
             setCommentPosting(false);
         }
     };
+
+    useEffect(() => {
+        const fetchComments = async () => {
+            try {
+                const res = await fetch(`/api/comment/getcomments/${postId}`);
+                const data = await res.json();
+                if (!res.ok) {
+                    toast.error("Failed to fetch comments");
+                    return;
+                }
+                setComments(data);
+            } catch (error) {
+                toast.error("Something went wrong");
+                console.log(error);
+            }
+        };
+        fetchComments();
+    }, [postId]);
 
     return (
         <div className="max-w-2xl w-full mx-auto p-3">
@@ -101,6 +122,21 @@ const CommentSection = ({ postId }) => {
                         </Button>
                     </div>
                 </form>
+            )}
+            {comments.length === 0 ? (
+                <p className="text-sm my-5">No comments yet</p>
+            ) : (
+                <>
+                    <div className="text-sm my-5 flex items-center gap-1">
+                        <p>Comments</p>
+                        <div className=" border border-gray-400 py-0.5 px-2 rounded-sm">
+                            <p>{comments.length}</p>
+                        </div>
+                    </div>
+                    {comments.map((comment, index) => (
+                        <Comments comment={comment} key={index} />
+                    ))}
+                </>
             )}
         </div>
     );

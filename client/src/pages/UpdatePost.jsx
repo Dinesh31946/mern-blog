@@ -31,7 +31,6 @@ const UpdatePost = () => {
             const fetchFunction = async () => {
                 const res = await fetch(`/api/post/getposts?postId=${postId}`);
                 const data = await res.json();
-                console.log("data=> ", data);
 
                 if (!res.ok) {
                     toast.error("Failed to fetch post");
