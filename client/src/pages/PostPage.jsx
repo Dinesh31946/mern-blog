@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Atom } from "react-loading-indicators";
 import { Button } from "flowbite-react";
+import CallToAction from "../components/CallToAction";
 
 const PostPage = () => {
     const { postSlug } = useParams();
@@ -77,6 +78,9 @@ const PostPage = () => {
                 className="p-3 mt-5 sm:mt-10 max-w-2xl sm:max-w-4xl mx-auto w-full post-content"
                 dangerouslySetInnerHTML={{ __html: post && post.content }}
             ></div>
+            <div className="max-w-4xl mx-auto w-full">
+                <CallToAction />
+            </div>
         </main>
     );
 };
