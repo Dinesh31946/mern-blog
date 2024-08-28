@@ -52,8 +52,58 @@ const likeComment = async (req, res, next) => {
     }
 };
 
+const editComment = async (req, res, next) => {
+    try {
+        const { commentId } = req.params;
+        const { content } = req.body;
+        const comment = await Comment.findById(commentId);
+        if (!comment) {
+            return next(errorHandler("Comment not found"));
+        }
+        if (comment.userId != req.user.id && !req.user.isAdmin) {
+            return next(
+                errorHandler("You are not allowed to edit this comment")
+            );
+        }
+        if (content.trim() === comment.content.trim()) {
+            return next(errorHandler("No changes made"));
+        }
+        const editedComment = await Comment.findByIdAndUpdate(
+            commentId,
+            {
+                content,
+            },
+            { new: true }
+        );
+        res.status(200).json(editedComment);
+    } catch (error) {
+        next(error);
+    }
+};
+
+const deleteComment = async (req, res, next) => {
+    try {
+        const { commentId } = req.params;
+        const comment = await Comment.findById(commentId);
+        if (!comment) {
+            return next(errorHandler("Comment not found"));
+        }
+        if (comment.userId != req.user.id && !req.user.isAdmin) {
+            return next(
+                errorHandler("You are not allowed to delete this comment")
+            );
+        }
+        await Comment.findByIdAndDelete(commentId);
+        res.status(200).json("Comment deleted successfully");
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     createComment,
     getComments,
     likeComment,
+    editComment,
+    deleteComment,
 };

@@ -108,6 +108,22 @@ const CommentSection = ({ postId }) => {
         }
     };
 
+    const handleEdit = async (comment, editedContent) => {
+        setComments(
+            comments.map((c) =>
+                c._id === comment._id ? { ...c, content: editedContent } : c
+            )
+        );
+    };
+
+    const handleDelete = async (commentId) => {
+        const updatedComments = comments.filter(
+            (comment) => comment._id !== commentId
+        );
+
+        setComments(updatedComments);
+    };
+
     return (
         <div className="max-w-2xl w-full mx-auto p-3">
             {currentUser ? (
@@ -151,7 +167,7 @@ const CommentSection = ({ postId }) => {
                     />
                     <div className="flex justify-between items-center mt-5">
                         <p className="text-gray-500 text-xs ml-2">
-                            {200 - comment.length} characters remaining
+                            {250 - comment.length} characters remaining
                         </p>
                         <Button
                             type="submit"
@@ -181,6 +197,8 @@ const CommentSection = ({ postId }) => {
                             comment={comment}
                             key={index}
                             onLike={handleLike}
+                            onEdit={handleEdit}
+                            onDelete={handleDelete}
                         />
                     ))}
                 </>
