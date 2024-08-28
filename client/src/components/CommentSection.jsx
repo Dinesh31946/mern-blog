@@ -1,7 +1,7 @@
 import { Button, Textarea } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Comments from "./Comments";
 
@@ -10,6 +10,8 @@ const CommentSection = ({ postId }) => {
     const [comment, setComment] = useState("");
     const [commentPosting, setCommentPosting] = useState(false);
     const [comments, setComments] = useState([]);
+
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -66,6 +68,45 @@ const CommentSection = ({ postId }) => {
         };
         fetchComments();
     }, [postId]);
+
+    const handleLike = async (commentId) => {
+        try {
+            if (!currentUser) {
+                toast.error("You must be signed in to like a comment!");
+                navigate("/sign-in");
+                return;
+            }
+
+            const res = await fetch(`/api/comment/likeComment/${commentId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                console.log("data=> ", data);
+
+                setComments(
+                    comments.map((comment) =>
+                        comment._id === commentId
+                            ? {
+                                  ...comment,
+                                  likes: data.likes,
+                                  numberOfLikes: data.likes.length,
+                              }
+                            : comment
+                    )
+                );
+            } else {
+                toast.error("Failed to like comment!");
+            }
+        } catch (error) {
+            console.error("Error liking comment:", error);
+            toast.error("Something went wrong while liking the comment.");
+        }
+    };
 
     return (
         <div className="max-w-2xl w-full mx-auto p-3">
@@ -124,7 +165,9 @@ const CommentSection = ({ postId }) => {
                 </form>
             )}
             {comments.length === 0 ? (
-                <p className="text-sm my-5">No comments yet</p>
+                <p className="text-sm my-5 mx-2 text-gray-500">
+                    No comments yet
+                </p>
             ) : (
                 <>
                     <div className="text-sm my-5 flex items-center gap-1">
@@ -134,7 +177,11 @@ const CommentSection = ({ postId }) => {
                         </div>
                     </div>
                     {comments.map((comment, index) => (
-                        <Comments comment={comment} key={index} />
+                        <Comments
+                            comment={comment}
+                            key={index}
+                            onLike={handleLike}
+                        />
                     ))}
                 </>
             )}
