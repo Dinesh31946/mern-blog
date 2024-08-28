@@ -1,3 +1,4 @@
+import React from "react";
 import { Button, Textarea } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -5,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Comments from "./Comments";
 
-const CommentSection = ({ postId }) => {
+const CommentSection = React.memo(({ postId }) => {
     const { currentUser } = useSelector((state) => state.user);
     const [comment, setComment] = useState("");
     const [commentPosting, setCommentPosting] = useState(false);
@@ -16,12 +17,14 @@ const CommentSection = ({ postId }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setCommentPosting(true);
-        if (comment.length > 200) {
+        if (comment.length > 250) {
             toast.error("Comment cannot be longer that 200 characters!");
+            setCommentPosting(false);
             return;
         }
         if (comment.trim() === " ") {
             toast.error("Comment cannot be empty!");
+            setCommentPosting(false);
             return;
         }
         try {
@@ -43,6 +46,7 @@ const CommentSection = ({ postId }) => {
                 setComments([data, ...comments]);
             } else {
                 toast.error("Failed to post comment!");
+                setCommentPosting(false);
             }
         } catch (error) {
             toast.error("Something went wrong");
@@ -205,6 +209,6 @@ const CommentSection = ({ postId }) => {
             )}
         </div>
     );
-};
+});
 
 export default CommentSection;
