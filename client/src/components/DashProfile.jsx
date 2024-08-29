@@ -223,7 +223,7 @@ const DashProfile = () => {
                     <img
                         src={imageFileUrl || currentUser.profilePicture}
                         alt="user avatar"
-                        className={`rounded-full w-full h-full border-8 object-cover border-[lightgray] ${
+                        className={`rounded-full w-full h-full border-8 object-cover border-[lightgray] hover:border-indigo-500/50 ${
                             imageFileUploadProgress &&
                             imageFileUploadProgress < 100 &&
                             "opacity-60"
