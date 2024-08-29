@@ -58,7 +58,9 @@ const CommentSection = React.memo(({ postId }) => {
     useEffect(() => {
         const fetchComments = async () => {
             try {
-                const res = await fetch(`/api/comment/getcomments/${postId}`);
+                const res = await fetch(
+                    `/api/comment/getPostComments/${postId}`
+                );
                 const data = await res.json();
                 if (!res.ok) {
                     toast.error("Failed to fetch comments");

@@ -11,6 +11,7 @@ import {
     HiOutlineUserGroup,
     HiUser,
 } from "react-icons/hi";
+import { LiaCommentDotsSolid } from "react-icons/lia";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { userSignoutStart, userSignoutSuccess } from "../redux/user/userSlice";
@@ -75,6 +76,16 @@ const DashSidebar = () => {
                                     as="div"
                                 >
                                     Users
+                                </SidebarItem>
+                            </Link>
+                            <Link to="/dashboard?tab=comments">
+                                <SidebarItem
+                                    className="cursor-pointer"
+                                    active={tab === "comments"}
+                                    icon={LiaCommentDotsSolid}
+                                    as="div"
+                                >
+                                    Comments
                                 </SidebarItem>
                             </Link>
                             <Link to="/dashboard?tab=posts">

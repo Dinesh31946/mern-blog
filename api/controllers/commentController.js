@@ -20,7 +20,7 @@ const createComment = async (req, res, next) => {
     }
 };
 
-const getComments = async (req, res, next) => {
+const getPostComments = async (req, res, next) => {
     try {
         const { postId } = req.params;
         const comments = await Comment.find({ postId }).sort({ createdAt: -1 });
@@ -100,10 +100,30 @@ const deleteComment = async (req, res, next) => {
     }
 };
 
+const getComments = async (req, res, next) => {
+    try {
+        if (!req.user.isAdmin) {
+            next(errorHandler("You do not have permission to access comments"));
+        }
+
+        const startIndex = parseInt(req.query.startIndex) || 0;
+        const limit = parseInt(req.query.limit) || 9;
+
+        const comments = await Comment.find()
+            .sort({ updatedAt: -1 })
+            .skip(startIndex)
+            .limit(limit);
+        res.status(200).json(comments);
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     createComment,
-    getComments,
+    getPostComments,
     likeComment,
     editComment,
     deleteComment,
+    getComments,
 };
