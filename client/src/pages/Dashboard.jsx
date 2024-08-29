@@ -5,10 +5,13 @@ import DashProfile from "../components/DashProfile";
 import DashPosts from "../components/DashPosts";
 import DashUsers from "../components/DashUsers";
 import DashComments from "../components/DashComments";
+import DashBoardComp from "../components/DashBoardComp";
+import { useSelector } from "react-redux";
 
 const Dashboard = () => {
     const location = useLocation();
     const [tab, setTab] = useState();
+    const { currentUser } = useSelector((state) => state.user);
 
     useEffect(() => {
         const urlParams = new URLSearchParams(location.search);
@@ -17,7 +20,7 @@ const Dashboard = () => {
         if (tabFromUrl) {
             setTab(tabFromUrl);
         } else {
-            setTab("profile");
+            setTab(currentUser.isAdmin ? "dashboard" : "profile");
         }
     }, [location.search]);
 
@@ -35,6 +38,8 @@ const Dashboard = () => {
             {tab === "users" && <DashUsers />}
             {/* Comments page */}
             {tab === "comments" && <DashComments />}
+            {/* Dashboard page */}
+            {tab === "dashboard" && <DashBoardComp />}
         </div>
     );
 };

@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { userSignoutStart, userSignoutSuccess } from "../redux/user/userSlice";
 import { toast } from "react-toastify";
+import { RxDashboard } from "react-icons/rx";
 
 const DashSidebar = () => {
     const dispatch = useDispatch();
@@ -54,6 +55,18 @@ const DashSidebar = () => {
         <Sidebar className="w-full md:w-56">
             <SidebarItems>
                 <SidebarItemGroup className="flex flex-col gap-1">
+                    {currentUser.isAdmin && (
+                        <Link to="/dashboard?tab=dashboard">
+                            <SidebarItem
+                                className="cursor-pointer"
+                                active={tab === "dashboard"}
+                                icon={RxDashboard}
+                                as="div"
+                            >
+                                Dashboard
+                            </SidebarItem>
+                        </Link>
+                    )}
                     <Link to="/dashboard?tab=profile">
                         <SidebarItem
                             className="cursor-pointer"
