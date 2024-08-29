@@ -144,7 +144,7 @@ const DashBoardComp = () => {
                 </div>
             </div>
             <div className="flex flex-wrap gap-4 py-3 mx-auto justify-center ">
-                <div className="flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-gray-700">
+                <div className="flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-slate-800 border border-gray-300">
                     <div className="flex justify-between p-3 text-sm font-semibold">
                         <h1 className="text-center p-2">Recent users</h1>
                         <Button gradientDuoTone={"purpleToPink"} outline>
@@ -159,7 +159,7 @@ const DashBoardComp = () => {
                         {users &&
                             users.map((user) => (
                                 <TableBody key={user._id} className="divide-y">
-                                    <TableRow className="bg-white dark:border-gray-600 dark:bg-gray-700">
+                                    <TableRow className="bg-white dark:border-gray-600 dark:bg-slate-800">
                                         <TableCell>
                                             <img
                                                 src={user.profilePicture}
@@ -173,7 +173,7 @@ const DashBoardComp = () => {
                             ))}
                     </Table>
                 </div>
-                <div className="flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-gray-700">
+                <div className="flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-slate-800 border border-gray-300">
                     <div className="flex justify-between p-3 text-sm font-semibold">
                         <h1 className="text-center p-2">Recent Comments</h1>
                         <Button gradientDuoTone={"purpleToPink"} outline>
@@ -191,7 +191,7 @@ const DashBoardComp = () => {
                                     key={comment._id}
                                     className="divide-y"
                                 >
-                                    <TableRow className="bg-white dark:border-gray-600 dark:bg-gray-700">
+                                    <TableRow className="bg-white dark:border-gray-600 dark:bg-slate-800">
                                         <TableCell className="w-96">
                                             <p className="line-clamp-2">
                                                 {comment.content}
@@ -207,7 +207,7 @@ const DashBoardComp = () => {
                             ))}
                     </Table>
                 </div>
-                <div className="flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-gray-700">
+                <div className="flex flex-col w-full md:w-auto shadow-md p-2 rounded-md dark:bg-slate-800 border border-gray-300">
                     <div className="flex justify-between p-3 text-sm font-semibold">
                         <h1 className="text-center p-2">Recent Posts</h1>
                         <Button gradientDuoTone={"purpleToPink"} outline>
@@ -222,7 +222,7 @@ const DashBoardComp = () => {
                         {posts &&
                             posts.map((post) => (
                                 <TableBody key={post._id} className="divide-y">
-                                    <TableRow className="bg-white dark:border-gray-600 dark:bg-gray-700">
+                                    <TableRow className="bg-white dark:border-gray-600 dark:bg-slate-800">
                                         <TableCell>
                                             <img
                                                 src={post.image}
