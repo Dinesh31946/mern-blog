@@ -29,11 +29,10 @@ const DashComments = () => {
             try {
                 const res = await fetch(`/api/comment/getcomments`);
                 const data = await res.json();
-                console.log("data=> ", data);
 
                 if (res.ok) {
-                    setComments(data);
-                    if (data.length < 9) {
+                    setComments(data.comments);
+                    if (data.comments.length < 9) {
                         setShowMore(false);
                     }
                 }
@@ -57,7 +56,7 @@ const DashComments = () => {
             const data = await res.json();
             if (res.ok) {
                 setComments((prev) => [...prev, ...data]);
-                if (data.length < 9) {
+                if (data.comments.length < 9) {
                     setShowMore(false);
                 }
             }
@@ -75,7 +74,7 @@ const DashComments = () => {
                     method: "DELETE",
                 }
             );
-            const data = await res.json();
+            // const data = await res.json();
             if (!res.ok) {
                 toast.error("Something went wrong, please try again later.");
             } else {

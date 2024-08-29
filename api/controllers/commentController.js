@@ -110,10 +110,21 @@ const getComments = async (req, res, next) => {
         const limit = parseInt(req.query.limit) || 9;
 
         const comments = await Comment.find()
-            .sort({ updatedAt: -1 })
+            .sort({ creatdAt: -1 })
             .skip(startIndex)
             .limit(limit);
-        res.status(200).json(comments);
+
+        const totalComments = await Comment.countDocuments();
+        const now = new Date();
+        const oneMonthAgo = new Date(
+            now.getFullYear(),
+            now.getMonth() - 1,
+            now.getDate()
+        );
+        const lastMonthComments = await Comment.countDocuments({
+            creatdAt: { $gte: oneMonthAgo },
+        });
+        res.status(200).json({ comments, totalComments, oneMonthAgo });
     } catch (error) {
         next(error);
     }
