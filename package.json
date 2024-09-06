@@ -7,7 +7,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "node api/server.js",
         "dev": "nodemon api/server.js",
-        "build": "npm install && npm install --prefix client && npm build --prefix client"
+        "build": "npm install && npm install --prefix client && npm run build --prefix client"
     },
     "keywords": [],
     "author": "",
