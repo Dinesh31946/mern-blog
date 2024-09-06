@@ -2,7 +2,7 @@ const About = () => {
     return (
         <div>
             <div className="min-h-screen  my-20">
-                <div className="max-w-6xl mx-auto p-3 text-center">
+                <div className="max-w-7xl mx-auto p-3 text-center">
                     <h1 className="text-3xl font-semibold">
                         Welcome to
                         <span className="ml-4 px-2 py-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white">
@@ -14,7 +14,7 @@ const About = () => {
                         Your Gateway to Modern JavaScript Development
                     </p>
                 </div>
-                <div className="max-w-6xl mx-auto p-6 sm:p-3 md:p-6 text-start">
+                <div className="max-w-7xl mx-auto p-6 sm:p-3 md:p-6 text-start">
                     <section className="my-10">
                         <h2 className="text-3xl font-semibold text-blue-500">
                             Why JavaScript?
