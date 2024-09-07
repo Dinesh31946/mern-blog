@@ -17,8 +17,6 @@ const PORT = process.env.PORT || 3000;
 
 const connect = connectDb(process.env.MongoDbUri);
 
-const __dirname = path.resolve();
-
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
